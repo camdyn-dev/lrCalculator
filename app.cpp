@@ -3,6 +3,8 @@
 
 using namespace std;
 
+// these names boutta be verbose as FUCK
+
 double calculateMean(int popSize, double *pop)
 {
     // used to calculate xbar and ybar
@@ -27,17 +29,34 @@ void calculateIndexMinusMean(int popSize, double mean, double *pop, double *resu
     }
 }
 
+double calculateIndexMinusMeanSquaredAndSum(int popSize, double *idxMinusMean, double *results)
+{
+    // used to calculate (xi - xbar)^2 and (yi-ybar)^2
+    // using double instead of void to return the sigma of (xi-xbar)^2 and (yi-ybar)^2
+    double sum = 0;
+    for (int idx = 0; idx < popSize; idx++)
+    {
+        results[idx] = pow(idxMinusMean[idx], 2);
+        sum += results[idx];
+        cout << "result: " << results[idx] << endl;
+    }
+    cout << "sum: " << sum << endl;
+    return sum;
+}
+
 double linearRegression()
 {
     // holders for important values
-    double xBar;
-    double yBar;
+    // initializing all with zero just to be safe. They'll either be re-assigned or incremented/decremented
+    double xBar = 0;
+    double yBar = 0;
 
-    int popSize;
+    int popSize = 0;
     double *xValues, *yValues;
     double *xiMinusXBar, *yiMinusYBar;
 
-    double *xiMinusXBarSquared, *yiMinusXBarSquared;
+    double *xiMinusXBarSquared, *yiMinusYBarSquared;
+    double sigmaXiMinusXBarSquared = 0, sigmaYiMinusYBarSquared = 0;
 
     cout << "How many subjects are in your population?: ";
     cin >> popSize;
@@ -77,9 +96,16 @@ double linearRegression()
 
     // creating arrays for (xi - xbar)^2 and (yi - ybar)^2
     xiMinusXBarSquared = new double[popSize];
-    yiMinusXBarSquared = new double[popSize];
+    yiMinusYBarSquared = new double[popSize];
 
     // calculating values for (xi - xbar)^2 and (yi-ybar)^2
+    // described in function, but we're modifying arrays inside since pointers, and returning the sum
+    // I guess I could use a pass-by reference to be more consistent? this seems safer, though.
+    sigmaXiMinusXBarSquared = calculateIndexMinusMeanSquaredAndSum(popSize, xiMinusXBar, xiMinusXBarSquared);
+    sigmaYiMinusYBarSquared = calculateIndexMinusMeanSquaredAndSum(popSize, yiMinusYBar, yiMinusYBarSquared);
+
+    cout << "sigma of (xi - xbar)^2 : " << sigmaXiMinusXBarSquared << endl;
+    cout << "sigma of (yi - ybar)^2 : " << sigmaYiMinusYBarSquared << endl;
 
     return 0;
 }
