@@ -6,8 +6,8 @@ using namespace std;
 
 /*
 TODOS:
-maybe change all doubles to long doubles? would be more precise, and that's very important for this
-
+everything is a long double for precision i guess
+fuck memory lol
 */
 
 /*
@@ -70,10 +70,13 @@ long double calculateXiMinusXBarTimesYiMinusYBar(int popSize, long double *xiMin
     return sum;
 };
 
-long double calculateVariance(int popSize, long double sigmaIdxMinusMeanSqaured)
+long double calculateVariance(int popSize, long double sigmaIdxMinusMeanSqaured, int decrement)
 {
+    // decrement is used for degrees of freedom
+    //  for example, on standard variances of one set, it will be n -1
+    //  but, when calculating slope variance (MSE), or for multiple sets, it'll be n - (number of sets)
     long double variance = 0;
-    variance = sigmaIdxMinusMeanSqaured / (popSize - 1);
+    variance = sigmaIdxMinusMeanSqaured / (popSize - decrement);
     return variance;
 }
 
@@ -134,6 +137,17 @@ long double calculateYiMinusYHatiSquaredAndSum(int popSize, long double *yiMinus
     return sum;
 }
 
+long double calculateTestStatistic(long double slope, long double slopeStdDev)
+{
+    return slope / slopeStdDev;
+}
+
+long double calculateSlopeStdDev(long double MSESquared, long double sigmaXiMinusXbarSquared)
+{
+    long double slopeStdDev = MSESquared / sqrt(sigmaXiMinusXbarSquared);
+    return slopeStdDev;
+}
+
 void linearRegression()
 {
     // holders for important values
@@ -174,6 +188,22 @@ void linearRegression()
     // SSR = sigma(yHati - ybar)^2
     // SST = SSE + SSR
     long double SSE = 0, SSR = 0, SST = 0;
+
+    // coefficient of determination, MSE, MSESquared, slopeStdDev
+    long double coefficientOfDetermination = 0;
+    long double MSE = 0, MSESquared = 0;
+    long double slopeStdDev = 0;
+
+    // t test statistic POGGERRRRSSSS
+    long double tTestStatistic = 0;
+
+    //
+    //
+    //
+    // PROGRAM START
+    //
+    //
+    //
 
     cout << "How many subjects are in your population?: ";
     cin >> popSize;
@@ -232,8 +262,8 @@ void linearRegression()
     sigmaXiMinusXBarTimesYiMinusYBar = calculateXiMinusXBarTimesYiMinusYBar(popSize, xiMinusXBar, yiMinusYBar, xiMinusXBarTimesYiMinusYBar);
 
     // calculating variances, standard deviation
-    xVariance = calculateVariance(popSize, sigmaXiMinusXBarSquared);
-    yVariance = calculateVariance(popSize, sigmaYiMinusYBarSquared);
+    xVariance = calculateVariance(popSize, sigmaXiMinusXBarSquared, 1);
+    yVariance = calculateVariance(popSize, sigmaYiMinusYBarSquared, 1);
 
     xStdDev = calculateStdDev(xVariance);
     yStdDev = calculateStdDev(yVariance);
@@ -247,7 +277,7 @@ void linearRegression()
     cout << "Sy = " << setprecision(18) << yStdDev << endl;
 
     // calculating covariance; sickly enough, we can just use the variance function with the (xi-xbar)(yi-ybar) val and it works
-    covariance = calculateVariance(popSize, sigmaXiMinusXBarTimesYiMinusYBar);
+    covariance = calculateVariance(popSize, sigmaXiMinusXBarTimesYiMinusYBar, 1);
 
     cout << "Sxy = " << setprecision(18) << covariance << endl;
 
@@ -292,6 +322,21 @@ void linearRegression()
 
     yHatMinusYBarSquared = new long double[popSize];
     SSR = calculateIndexMinusMeanSquaredAndSum(popSize, yHatMinusYBar, yHatMinusYBarSquared);
+
+    // okay, now that the ultra AAAAA calculations are done, time for some smaller ones
+    coefficientOfDetermination = SSR / sigmaYiMinusYBarSquared;
+
+    // MSE time
+    MSE = calculateVariance(popSize, SSE, 2);
+    MSESquared = calculateStdDev(MSE);
+
+    // Slope Standard Deviation time
+    slopeStdDev = calculateSlopeStdDev(MSESquared, sigmaXiMinusXBarSquared);
+
+    // at last, test statistic
+    tTestStatistic = calculateTestStatistic(slope, slopeStdDev);
+
+    cout << "Test Statistic is: " << setprecision(3) << tTestStatistic << endl;
 }
 
 int main()
