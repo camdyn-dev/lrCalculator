@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <cmath>
 
 using namespace std;
@@ -34,11 +35,12 @@ double calculateIndexMinusMeanSquaredAndSum(int popSize, double *idxMinusMean, d
     // used to calculate (xi - xbar)^2 and (yi-ybar)^2
     // using double instead of void to return the sigma of (xi-xbar)^2 and (yi-ybar)^2
     double sum = 0;
+    cout << "(idx - mean)^2" << endl;
     for (int idx = 0; idx < popSize; idx++)
     {
         results[idx] = pow(idxMinusMean[idx], 2);
         sum += results[idx];
-        cout << "result: " << results[idx] << endl;
+        cout << results[idx] << endl;
     }
     cout << "sum: " << sum << endl;
     return sum;
@@ -47,15 +49,30 @@ double calculateIndexMinusMeanSquaredAndSum(int popSize, double *idxMinusMean, d
 double calculateXiMinusXBarTimesYiMinusYBar(int popSize, double *xiMinusXBar, double *yiMinusYBar, double *results)
 {
     double sum = 0;
+    cout << "(xi - xbar)(yi - ybar)" << endl;
     for (int idx = 0; idx < popSize; idx++)
     {
         results[idx] = (xiMinusXBar[idx] * yiMinusYBar[idx]);
         sum += results[idx];
-        cout << "result: " << results[idx] << endl;
+        cout << results[idx] << endl;
     }
     cout << "sum: " << sum << endl;
     return sum;
 };
+
+double calculateVariance(int popSize, double sigmaIdxMinusMeanSqaured)
+{
+    double variance = 0;
+    variance = sigmaIdxMinusMeanSqaured / (popSize - 1);
+    return variance;
+}
+
+long double calculateStdDev(long double variance)
+{
+    // using sqrtl and long double to ensure i get as much precision as possible
+    // might wanna change most numbers to long doubles
+    return sqrtl(variance);
+}
 
 double linearRegression()
 {
@@ -74,6 +91,11 @@ double linearRegression()
     // these variable names are getting fucking large
     double *xiMinusXBarTimesYiMinusYBar;
     double sigmaXiMinusXBarTimesYiMinusYBar = 0;
+
+    // variances, standard deviations, covariance
+    long double xVariance = 0, yVariance = 0;
+    double xStdDev = 0, yStdDev = 0;
+    double covariance = 0;
 
     cout << "How many subjects are in your population?: ";
     cin >> popSize;
@@ -126,7 +148,24 @@ double linearRegression()
 
     // creating array for (xi-xbar)(yi-ybar)
     xiMinusXBarTimesYiMinusYBar = new double[popSize];
+
+    // calculating values for (xi-xbar)(yi-ybar)
+    // same thing as above, return instead of pass-by reference
     sigmaXiMinusXBarTimesYiMinusYBar = calculateXiMinusXBarTimesYiMinusYBar(popSize, xiMinusXBar, yiMinusYBar, xiMinusXBarTimesYiMinusYBar);
+
+    // calculating variances, standard deviation
+    xVariance = calculateVariance(popSize, sigmaXiMinusXBarSquared);
+    yVariance = calculateVariance(popSize, sigmaYiMinusYBarSquared);
+
+    xStdDev = calculateStdDev(xVariance);
+    yStdDev = calculateStdDev(yVariance);
+
+    // outputting to check
+    cout << "Sx2 = " << xVariance << endl;
+    cout << "Sy2 = " << yVariance << endl;
+
+    cout << "Sx = " << setprecision(12) << xStdDev << endl;
+    cout << "Sy = " << setprecision(12) << yStdDev << endl;
 
     return 0;
 }
