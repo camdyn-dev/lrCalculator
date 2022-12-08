@@ -344,6 +344,7 @@ void linearRegression()
 
     cout << endl
          << endl;
+
     cout << left << setprecision(8) << setw(8) << "x-bar: " << setw(12) << xBar << setw(8) << "y-bar: " << setw(12) << yBar << endl
          << setw(8) << "Sx2:" << setw(12) << xVariance << setw(8) << "Sy2:" << setw(12) << yVariance << endl
          << setw(8) << "Sx:" << setw(12) << xStdDev << setw(8) << "Sx:" << setw(12) << xStdDev << endl
@@ -353,6 +354,24 @@ void linearRegression()
          << setw(8) << "SST:" << setw(12) << sigmaYiMinusYBarSquared << setw(8) << "R2:" << setw(12) << coefficientOfDetermination << endl
          << setw(8) << "MSE/S2:" << setw(12) << MSE << setw(8) << "S:" << setw(12) << MSERoot << endl
          << setw(8) << "Sb1:" << setw(12) << slopeStdDev << setw(8) << "T Stat:" << setw(12) << tTestStatistic << endl;
+
+    cout << endl
+         << endl;
+
+    cout << "Y-Hat equation: " << setprecision(8) << intercept << " * (" << slope << " * x)" << endl;
+
+    delete xValues;
+    delete yValues;
+    delete xiMinusXBar;
+    delete yiMinusYBar;
+    delete xiMinusXBarSquared;
+    delete yiMinusYBarSquared;
+    delete xiMinusXBarTimesYiMinusYBar;
+    delete yHatValues;
+    delete yiMinusYHati;
+    delete yiMinusYHatiSquared;
+    delete yHatMinusYBar;
+    delete yHatMinusYBarSquared;
 }
 
 int main()
