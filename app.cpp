@@ -4,7 +4,11 @@
 
 using namespace std;
 
-// these names boutta be verbose as FUCK
+/*
+TODOS:
+maybe change all doubles to long doubles? would be more precise, and that's very important for this
+
+*/
 
 double calculateMean(int popSize, double *pop)
 {
@@ -60,9 +64,9 @@ double calculateXiMinusXBarTimesYiMinusYBar(int popSize, double *xiMinusXBar, do
     return sum;
 };
 
-double calculateVariance(int popSize, double sigmaIdxMinusMeanSqaured)
+long double calculateVariance(int popSize, long double sigmaIdxMinusMeanSqaured)
 {
-    double variance = 0;
+    long double variance = 0;
     variance = sigmaIdxMinusMeanSqaured / (popSize - 1);
     return variance;
 }
@@ -93,9 +97,10 @@ double linearRegression()
     double sigmaXiMinusXBarTimesYiMinusYBar = 0;
 
     // variances, standard deviations, covariance
+    // using long double for more accuracy
     long double xVariance = 0, yVariance = 0;
-    double xStdDev = 0, yStdDev = 0;
-    double covariance = 0;
+    long double xStdDev = 0, yStdDev = 0;
+    long double covariance = 0;
 
     cout << "How many subjects are in your population?: ";
     cin >> popSize;
@@ -164,8 +169,14 @@ double linearRegression()
     cout << "Sx2 = " << xVariance << endl;
     cout << "Sy2 = " << yVariance << endl;
 
-    cout << "Sx = " << setprecision(12) << xStdDev << endl;
-    cout << "Sy = " << setprecision(12) << yStdDev << endl;
+    // using set precision to check how accurate
+    cout << "Sx = " << setprecision(18) << xStdDev << endl;
+    cout << "Sy = " << setprecision(18) << yStdDev << endl;
+
+    // calculating covariance; sickly enough, we can just use the variance function with the (xi-xbar)(yi-ybar) val and it works
+    covariance = calculateVariance(popSize, sigmaXiMinusXBarTimesYiMinusYBar);
+
+    cout << "Sxy = " << setprecision(18) << covariance << endl;
 
     return 0;
 }
