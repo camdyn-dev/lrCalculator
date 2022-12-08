@@ -44,6 +44,19 @@ double calculateIndexMinusMeanSquaredAndSum(int popSize, double *idxMinusMean, d
     return sum;
 }
 
+double calculateXiMinusXBarTimesYiMinusYBar(int popSize, double *xiMinusXBar, double *yiMinusYBar, double *results)
+{
+    double sum = 0;
+    for (int idx = 0; idx < popSize; idx++)
+    {
+        results[idx] = (xiMinusXBar[idx] * yiMinusYBar[idx]);
+        sum += results[idx];
+        cout << "result: " << results[idx] << endl;
+    }
+    cout << "sum: " << sum << endl;
+    return sum;
+};
+
 double linearRegression()
 {
     // holders for important values
@@ -57,6 +70,10 @@ double linearRegression()
 
     double *xiMinusXBarSquared, *yiMinusYBarSquared;
     double sigmaXiMinusXBarSquared = 0, sigmaYiMinusYBarSquared = 0;
+
+    // these variable names are getting fucking large
+    double *xiMinusXBarTimesYiMinusYBar;
+    double sigmaXiMinusXBarTimesYiMinusYBar = 0;
 
     cout << "How many subjects are in your population?: ";
     cin >> popSize;
@@ -106,6 +123,10 @@ double linearRegression()
 
     cout << "sigma of (xi - xbar)^2 : " << sigmaXiMinusXBarSquared << endl;
     cout << "sigma of (yi - ybar)^2 : " << sigmaYiMinusYBarSquared << endl;
+
+    // creating array for (xi-xbar)(yi-ybar)
+    xiMinusXBarTimesYiMinusYBar = new double[popSize];
+    sigmaXiMinusXBarTimesYiMinusYBar = calculateXiMinusXBarTimesYiMinusYBar(popSize, xiMinusXBar, yiMinusYBar, xiMinusXBarTimesYiMinusYBar);
 
     return 0;
 }
