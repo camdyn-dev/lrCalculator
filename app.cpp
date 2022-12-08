@@ -185,7 +185,7 @@ void linearRegression()
 
     // coefficient of determination, MSE, MSESquared, slopeStdDev
     long double coefficientOfDetermination = 0;
-    long double MSE = 0, MSESquared = 0;
+    long double MSE = 0, MSERoot = 0;
     long double slopeStdDev = 0;
 
     // t test statistic POGGERRRRSSSS
@@ -299,32 +299,60 @@ void linearRegression()
 
     // MSE time
     MSE = calculateVariance(popSize, SSE, 2);
-    MSESquared = calculateStdDev(MSE);
+    MSERoot = calculateStdDev(MSE);
 
     // Slope Standard Deviation time
-    slopeStdDev = calculateSlopeStdDev(MSESquared, sigmaXiMinusXBarSquared);
+    slopeStdDev = calculateSlopeStdDev(MSERoot, sigmaXiMinusXBarSquared);
 
     // at last, test statistic
     tTestStatistic = calculateTestStatistic(slope, slopeStdDev);
 
     // header for dis shizzle
-    cout << left << setprecision(8) << setw(8) << "xi" << setw(8) << "yi"
+    cout << left << setprecision(10) << setw(10) << "xi" << setw(10) << "yi"
          << setw(16) << "xi - xbar" << setw(16) << "yi - ybar"
          << setw(20) << "(xi - xbar)^2" << setw(20) << "(yi - ybar)^2" << setw(24) << "(xi - xbar)(yi - ybar)"
-         << setw(12) << "y^i"
+         << setw(16) << "y^i"
          << setw(16) << "yi - y^i" << setw(20) << "(yi - y^i)^2"
          << setw(16) << "y^i - ybar" << setw(20) << "(y^i - ybar)^2" << endl;
 
     // printing the table
     for (int idx = 0; idx < popSize; idx++)
     {
-        cout << left << setw(8) << xValues[idx] << setw(8) << yValues[idx]
+        cout << left << setw(10) << xValues[idx] << setw(10) << yValues[idx]
              << setw(16) << xiMinusXBar[idx] << setw(16) << yiMinusYBar[idx]
              << setw(20) << xiMinusXBarSquared[idx] << setw(20) << yiMinusYBarSquared[idx] << setw(24) << xiMinusXBarTimesYiMinusYBar[idx]
-             << setw(12) << yHatValues[idx]
+             << setw(16) << yHatValues[idx]
              << setw(16) << yiMinusYHati[idx] << setw(20) << yiMinusYHatiSquared[idx]
              << setw(16) << yHatMinusYBar[idx] << setw(20) << yHatMinusYBarSquared[idx] << endl;
     }
+
+    cout << left << setw(52) << "Sums: " // this is to clear the spaces, hopefully it works
+         << setw(20) << sigmaXiMinusXBarSquared << setw(20) << sigmaYiMinusYBarSquared << setw(24) << sigmaXiMinusXBarTimesYiMinusYBar
+         << setw(32) << " "
+         << setw(20) << SSE
+         << setw(16) << " "
+         << setw(20) << SSR << endl;
+
+    // print out other important values, including;
+    //  xbar, ybar, sigma(xi-xbar)^2, sigma(yi-ybar)^2, sigma(xi-xbar)(yi-ybar),
+    //  (Sx2) xVariance, (Sx) xStdDev, (Sy2) yVariance, (Sy) yStdDev, (Sxy) covariance
+    //  correlation coefficient (Rxy)
+    //  intercept (b1), slope (b0), yHat equation (b1 + (b0 * x))
+    //  SSE, SSR, SST, coefficient of determination (r2)
+    //  MSE (S2), MSERoot (S), slopeStdDev (Sb1)
+    // test statistic (t)
+
+    cout << endl
+         << endl;
+    cout << left << setprecision(8) << setw(8) << "x-bar: " << setw(12) << xBar << setw(8) << "y-bar: " << setw(12) << yBar << endl
+         << setw(8) << "Sx2:" << setw(12) << xVariance << setw(8) << "Sy2:" << setw(12) << yVariance << endl
+         << setw(8) << "Sx:" << setw(12) << xStdDev << setw(8) << "Sx:" << setw(12) << xStdDev << endl
+         << setw(8) << "Sxy:" << setw(12) << covariance << setw(8) << "Rxy:" << setw(12) << correlationCoefficient << endl
+         << setw(8) << "b1:" << setw(12) << intercept << setw(8) << "b0:" << setw(12) << slope << endl
+         << setw(8) << "SSE:" << setw(12) << SSE << setw(8) << "SSR:" << setw(12) << SSR << endl
+         << setw(8) << "SST:" << setw(12) << sigmaYiMinusYBarSquared << setw(8) << "R2:" << setw(12) << coefficientOfDetermination << endl
+         << setw(8) << "MSE/S2:" << setw(12) << MSE << setw(8) << "S:" << setw(12) << MSERoot << endl
+         << setw(8) << "Sb1:" << setw(12) << slopeStdDev << setw(8) << "T Stat:" << setw(12) << tTestStatistic << endl;
 }
 
 int main()
