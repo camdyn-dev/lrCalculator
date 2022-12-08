@@ -78,6 +78,28 @@ long double calculateStdDev(long double variance)
     return sqrtl(variance);
 }
 
+long double calculateCorrelationCoefficient(long double covariance, long double xStdDev, long double yStdDev)
+{
+    long double bottom = xStdDev * yStdDev;
+    long double correlationCoefficient = covariance / bottom;
+    return correlationCoefficient;
+}
+
+long double calculateSlope(double sigmaXiMinusXBarTimesYiMinusYBar, double sigmaXiMinusXBarSquared)
+{
+    return (sigmaXiMinusXBarTimesYiMinusYBar / sigmaXiMinusXBarSquared);
+}
+
+long double calculateIntercept(double yBar, double xBar, long double slope)
+{
+    return (yBar - (slope * xBar));
+}
+
+long double yHatCalculator(double xValue, long double intercept, long double slope)
+{
+    return (intercept + (slope * xValue));
+}
+
 double linearRegression()
 {
     // holders for important values
@@ -101,6 +123,12 @@ double linearRegression()
     long double xVariance = 0, yVariance = 0;
     long double xStdDev = 0, yStdDev = 0;
     long double covariance = 0;
+
+    // correlation coefficienct
+    long double correlationCoefficient = 0;
+
+    // linear regression numbers
+    long double intercept = 0, slope = 0, error = 0;
 
     cout << "How many subjects are in your population?: ";
     cin >> popSize;
@@ -178,6 +206,27 @@ double linearRegression()
 
     cout << "Sxy = " << setprecision(18) << covariance << endl;
 
+    // calculating correlation coefficient
+    correlationCoefficient = calculateCorrelationCoefficient(covariance, xStdDev, yStdDev);
+
+    cout << "Rxy = " << setprecision(18) << correlationCoefficient << endl;
+
+    // o h  b o y  l i n e a r  r e g r e s s i o n  t i m e
+
+    // calculating slope
+    slope = calculateSlope(sigmaXiMinusXBarTimesYiMinusYBar, sigmaXiMinusXBarSquared);
+
+    cout << "b1 = " << setprecision(18) << slope << endl;
+
+    // calculating intercept
+
+    intercept = calculateIntercept(yBar, xBar, slope);
+    cout << "b0 = " << setprecision(18) << intercept << endl;
+
+    // testing yHat
+    long double yHatFor120 = yHatCalculator(120, intercept, slope);
+
+    cout << "yhat for 120 = " << setprecision(18) << yHatFor120 << endl;
     return 0;
 }
 
