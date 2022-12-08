@@ -16,11 +16,11 @@ X values: 180, 150, 95, 70, 70, 35
 Y values: 76, 71, 62, 57, 30, 34
 */
 
-double calculateMean(int popSize, double *pop)
+long double calculateMean(int popSize, long double *pop)
 {
     // used to calculate xbar and ybar
-    double sum = 0;
-    double mean = 0;
+    long double sum = 0;
+    long double mean = 0;
     for (int idx = 0; idx < popSize; idx++)
     {
         sum += pop[idx];
@@ -30,7 +30,7 @@ double calculateMean(int popSize, double *pop)
     return mean;
 }
 
-void calculateIndexMinusMean(int popSize, double mean, double *pop, double *results)
+void calculateIndexMinusMean(int popSize, long double mean, long double *pop, long double *results)
 {
     // used to calculate xi - xbar and yi - ybar
     // apparently I can't return a pointer, so I'll assign the values to the new function directly in here
@@ -40,11 +40,11 @@ void calculateIndexMinusMean(int popSize, double mean, double *pop, double *resu
     }
 }
 
-double calculateIndexMinusMeanSquaredAndSum(int popSize, double *idxMinusMean, double *results)
+long double calculateIndexMinusMeanSquaredAndSum(int popSize, long double *idxMinusMean, long double *results)
 {
     // used to calculate (xi - xbar)^2 and (yi-ybar)^2
     // using double instead of void to return the sigma of (xi-xbar)^2 and (yi-ybar)^2
-    double sum = 0;
+    long double sum = 0;
     cout << "(idx - mean)^2" << endl;
     for (int idx = 0; idx < popSize; idx++)
     {
@@ -56,9 +56,9 @@ double calculateIndexMinusMeanSquaredAndSum(int popSize, double *idxMinusMean, d
     return sum;
 }
 
-double calculateXiMinusXBarTimesYiMinusYBar(int popSize, double *xiMinusXBar, double *yiMinusYBar, double *results)
+long double calculateXiMinusXBarTimesYiMinusYBar(int popSize, long double *xiMinusXBar, long double *yiMinusYBar, long double *results)
 {
-    double sum = 0;
+    long double sum = 0;
     cout << "(xi - xbar)(yi - ybar)" << endl;
     for (int idx = 0; idx < popSize; idx++)
     {
@@ -91,17 +91,17 @@ long double calculateCorrelationCoefficient(long double covariance, long double 
     return correlationCoefficient;
 }
 
-long double calculateSlope(double sigmaXiMinusXBarTimesYiMinusYBar, double sigmaXiMinusXBarSquared)
+long double calculateSlope(long double sigmaXiMinusXBarTimesYiMinusYBar, long double sigmaXiMinusXBarSquared)
 {
     return (sigmaXiMinusXBarTimesYiMinusYBar / sigmaXiMinusXBarSquared);
 }
 
-long double calculateIntercept(double yBar, double xBar, long double slope)
+long double calculateIntercept(long double yBar, long double xBar, long double slope)
 {
     return (yBar - (slope * xBar));
 }
 
-void calculateYHatValues(int popSize, double *xValues, long double intercept, long double slope, long double *results)
+void calculateYHatValues(int popSize, long double *xValues, long double intercept, long double slope, long double *results)
 {
     cout << "Y Hat I values: " << endl;
     for (int idx = 0; idx < popSize; idx++)
@@ -111,7 +111,7 @@ void calculateYHatValues(int popSize, double *xValues, long double intercept, lo
     }
 }
 
-void calculateYiMinusYHati(int popSize, double *yValues, long double *yHatValues, long double *results)
+void calculateYiMinusYHati(int popSize, long double *yValues, long double *yHatValues, long double *results)
 {
     cout << "yi - y^i values: " << endl;
     for (int idx = 0; idx < popSize; idx++)
@@ -120,7 +120,7 @@ void calculateYiMinusYHati(int popSize, double *yValues, long double *yHatValues
         cout << results[idx] << endl;
     }
 }
-
+// could just use idx-mean squared for
 long double calculateYiMinusYHatiSquaredAndSum(int popSize, long double *yiMinusYHati, long double *results)
 {
     long double sum = 0;
@@ -142,15 +142,15 @@ void linearRegression()
     double yBar = 0;
 
     int popSize = 0;
-    double *xValues, *yValues;
-    double *xiMinusXBar, *yiMinusYBar;
+    long double *xValues, *yValues;
+    long double *xiMinusXBar, *yiMinusYBar;
 
-    double *xiMinusXBarSquared, *yiMinusYBarSquared;
-    double sigmaXiMinusXBarSquared = 0, sigmaYiMinusYBarSquared = 0;
+    long double *xiMinusXBarSquared, *yiMinusYBarSquared;
+    long double sigmaXiMinusXBarSquared = 0, sigmaYiMinusYBarSquared = 0;
 
     // these variable names are getting fucking large
-    double *xiMinusXBarTimesYiMinusYBar;
-    double sigmaXiMinusXBarTimesYiMinusYBar = 0;
+    long double *xiMinusXBarTimesYiMinusYBar;
+    long double sigmaXiMinusXBarTimesYiMinusYBar = 0;
 
     // variances, standard deviations, covariance
     // using long double for more accuracy
@@ -179,8 +179,8 @@ void linearRegression()
     cin >> popSize;
 
     // creating arrays for population values for calculations
-    xValues = new double[popSize];
-    yValues = new double[popSize];
+    xValues = new long double[popSize];
+    yValues = new long double[popSize];
 
     // receiving values for x and y population
     for (int xi = 0; xi < popSize; xi++)
@@ -204,16 +204,16 @@ void linearRegression()
          << "ybar = " << yBar << endl;
 
     // creating arrays for xi-xbar and yi-ybar
-    xiMinusXBar = new double[popSize];
-    yiMinusYBar = new double[popSize];
+    xiMinusXBar = new long double[popSize];
+    yiMinusYBar = new long double[popSize];
 
     // calculating values for xi-xbar and yi-ybar
     calculateIndexMinusMean(popSize, xBar, xValues, xiMinusXBar);
     calculateIndexMinusMean(popSize, yBar, yValues, yiMinusYBar);
 
     // creating arrays for (xi - xbar)^2 and (yi - ybar)^2
-    xiMinusXBarSquared = new double[popSize];
-    yiMinusYBarSquared = new double[popSize];
+    xiMinusXBarSquared = new long double[popSize];
+    yiMinusYBarSquared = new long double[popSize];
 
     // calculating values for (xi - xbar)^2 and (yi-ybar)^2
     // described in function, but we're modifying arrays inside since pointers, and returning the sum
@@ -225,7 +225,7 @@ void linearRegression()
     cout << "sigma of (yi - ybar)^2 : " << sigmaYiMinusYBarSquared << endl;
 
     // creating array for (xi-xbar)(yi-ybar)
-    xiMinusXBarTimesYiMinusYBar = new double[popSize];
+    xiMinusXBarTimesYiMinusYBar = new long double[popSize];
 
     // calculating values for (xi-xbar)(yi-ybar)
     // same thing as above, return instead of pass-by reference
@@ -277,11 +277,21 @@ void linearRegression()
     yiMinusYHati = new long double[popSize];
     calculateYiMinusYHati(popSize, yValues, yHatValues, yiMinusYHati);
 
-    // calculating (yi - y^i)^2
+    // calculating (yi - y^i)^2 and SSE
     yiMinusYHatiSquared = new long double[popSize];
     SSE = calculateYiMinusYHatiSquaredAndSum(popSize, yiMinusYHati, yiMinusYHatiSquared);
 
     cout << "sigma(yi - yhati)^2 OR SSE = " << SSE << endl;
+
+    // onto SSR
+
+    // calculating yHati - ybar
+    // i can use the idx minis mean and idx minus mean squared functions for these
+    yHatMinusYBar = new long double[popSize];
+    calculateIndexMinusMean(popSize, yBar, yHatValues, yHatMinusYBar);
+
+    yHatMinusYBarSquared = new long double[popSize];
+    SSR = calculateIndexMinusMeanSquaredAndSum(popSize, yHatMinusYBar, yHatMinusYBarSquared);
 }
 
 int main()
