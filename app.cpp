@@ -10,6 +10,12 @@ maybe change all doubles to long doubles? would be more precise, and that's very
 
 */
 
+/*
+TEST DATA
+X values: 180, 150, 95, 70, 70, 35
+Y values: 76, 71, 62, 57, 30, 34
+*/
+
 double calculateMean(int popSize, double *pop)
 {
     // used to calculate xbar and ybar
@@ -95,12 +101,40 @@ long double calculateIntercept(double yBar, double xBar, long double slope)
     return (yBar - (slope * xBar));
 }
 
-long double yHatCalculator(double xValue, long double intercept, long double slope)
+void calculateYHatValues(int popSize, double *xValues, long double intercept, long double slope, long double *results)
 {
-    return (intercept + (slope * xValue));
+    cout << "Y Hat I values: " << endl;
+    for (int idx = 0; idx < popSize; idx++)
+    {
+        results[idx] = intercept + (slope * xValues[idx]);
+        cout << results[idx] << endl;
+    }
 }
 
-double linearRegression()
+void calculateYiMinusYHati(int popSize, double *yValues, long double *yHatValues, long double *results)
+{
+    cout << "yi - y^i values: " << endl;
+    for (int idx = 0; idx < popSize; idx++)
+    {
+        results[idx] = yValues[idx] - yHatValues[idx];
+        cout << results[idx] << endl;
+    }
+}
+
+long double calculateYiMinusYHatiSquaredAndSum(int popSize, long double *yiMinusYHati, long double *results)
+{
+    long double sum = 0;
+    cout << "(yi - y^i)^2 values: " << endl;
+    for (int idx = 0; idx < popSize; idx++)
+    {
+        results[idx] = pow(yiMinusYHati[idx], 2);
+        cout << results[idx] << endl;
+        sum += results[idx];
+    }
+    return sum;
+}
+
+void linearRegression()
 {
     // holders for important values
     // initializing all with zero just to be safe. They'll either be re-assigned or incremented/decremented
@@ -129,6 +163,17 @@ double linearRegression()
 
     // linear regression numbers
     long double intercept = 0, slope = 0, error = 0;
+
+    // pointer arrays for yhat values
+    long double *yHatValues;
+    long double *yiMinusYHati, *yiMinusYHatiSquared;
+    long double *yHatMinusYBar, *yHatMinusYBarSquared;
+
+    // SSE, SSR and SST from yhats
+    // SSE = sigma(yi - yHat)^2
+    // SSR = sigma(yHati - ybar)^2
+    // SST = SSE + SSR
+    long double SSE = 0, SSR = 0, SST = 0;
 
     cout << "How many subjects are in your population?: ";
     cin >> popSize;
@@ -223,11 +268,20 @@ double linearRegression()
     intercept = calculateIntercept(yBar, xBar, slope);
     cout << "b0 = " << setprecision(18) << intercept << endl;
 
-    // testing yHat
-    long double yHatFor120 = yHatCalculator(120, intercept, slope);
+    // big stupid ass yhat table time now for SSE, SSR and SST :)))))))
+    yHatValues = new long double[popSize];
 
-    cout << "yhat for 120 = " << setprecision(18) << yHatFor120 << endl;
-    return 0;
+    calculateYHatValues(popSize, xValues, intercept, slope, yHatValues);
+
+    // calculating yi - y^i
+    yiMinusYHati = new long double[popSize];
+    calculateYiMinusYHati(popSize, yValues, yHatValues, yiMinusYHati);
+
+    // calculating (yi - y^i)^2
+    yiMinusYHatiSquared = new long double[popSize];
+    SSE = calculateYiMinusYHatiSquaredAndSum(popSize, yiMinusYHati, yiMinusYHatiSquared);
+
+    cout << "sigma(yi - yhati)^2 OR SSE = " << SSE << endl;
 }
 
 int main()
