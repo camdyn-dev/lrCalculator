@@ -45,28 +45,26 @@ long double calculateIndexMinusMeanSquaredAndSum(int popSize, long double *idxMi
     // used to calculate (xi - xbar)^2 and (yi-ybar)^2
     // using double instead of void to return the sigma of (xi-xbar)^2 and (yi-ybar)^2
     long double sum = 0;
-    cout << "(idx - mean)^2" << endl;
+
     for (int idx = 0; idx < popSize; idx++)
     {
         results[idx] = pow(idxMinusMean[idx], 2);
         sum += results[idx];
-        cout << results[idx] << endl;
     }
-    cout << "sum: " << sum << endl;
+
     return sum;
 }
 
 long double calculateXiMinusXBarTimesYiMinusYBar(int popSize, long double *xiMinusXBar, long double *yiMinusYBar, long double *results)
 {
     long double sum = 0;
-    cout << "(xi - xbar)(yi - ybar)" << endl;
+
     for (int idx = 0; idx < popSize; idx++)
     {
         results[idx] = (xiMinusXBar[idx] * yiMinusYBar[idx]);
         sum += results[idx];
-        cout << results[idx] << endl;
     }
-    cout << "sum: " << sum << endl;
+
     return sum;
 };
 
@@ -106,32 +104,28 @@ long double calculateIntercept(long double yBar, long double xBar, long double s
 
 void calculateYHatValues(int popSize, long double *xValues, long double intercept, long double slope, long double *results)
 {
-    cout << "Y Hat I values: " << endl;
     for (int idx = 0; idx < popSize; idx++)
     {
         results[idx] = intercept + (slope * xValues[idx]);
-        cout << results[idx] << endl;
     }
 }
 
 void calculateYiMinusYHati(int popSize, long double *yValues, long double *yHatValues, long double *results)
 {
-    cout << "yi - y^i values: " << endl;
+
     for (int idx = 0; idx < popSize; idx++)
     {
         results[idx] = yValues[idx] - yHatValues[idx];
-        cout << results[idx] << endl;
     }
 }
 // could just use idx-mean squared for
 long double calculateYiMinusYHatiSquaredAndSum(int popSize, long double *yiMinusYHati, long double *results)
 {
     long double sum = 0;
-    cout << "(yi - y^i)^2 values: " << endl;
     for (int idx = 0; idx < popSize; idx++)
     {
         results[idx] = pow(yiMinusYHati[idx], 2);
-        cout << results[idx] << endl;
+
         sum += results[idx];
     }
     return sum;
@@ -230,9 +224,6 @@ void linearRegression()
     xBar = calculateMean(popSize, xValues);
     yBar = calculateMean(popSize, yValues);
 
-    cout << "xbar = " << xBar << '\t'
-         << "ybar = " << yBar << endl;
-
     // creating arrays for xi-xbar and yi-ybar
     xiMinusXBar = new long double[popSize];
     yiMinusYBar = new long double[popSize];
@@ -251,9 +242,6 @@ void linearRegression()
     sigmaXiMinusXBarSquared = calculateIndexMinusMeanSquaredAndSum(popSize, xiMinusXBar, xiMinusXBarSquared);
     sigmaYiMinusYBarSquared = calculateIndexMinusMeanSquaredAndSum(popSize, yiMinusYBar, yiMinusYBarSquared);
 
-    cout << "sigma of (xi - xbar)^2 : " << sigmaXiMinusXBarSquared << endl;
-    cout << "sigma of (yi - ybar)^2 : " << sigmaYiMinusYBarSquared << endl;
-
     // creating array for (xi-xbar)(yi-ybar)
     xiMinusXBarTimesYiMinusYBar = new long double[popSize];
 
@@ -268,35 +256,20 @@ void linearRegression()
     xStdDev = calculateStdDev(xVariance);
     yStdDev = calculateStdDev(yVariance);
 
-    // outputting to check
-    cout << "Sx2 = " << xVariance << endl;
-    cout << "Sy2 = " << yVariance << endl;
-
-    // using set precision to check how accurate
-    cout << "Sx = " << setprecision(18) << xStdDev << endl;
-    cout << "Sy = " << setprecision(18) << yStdDev << endl;
-
     // calculating covariance; sickly enough, we can just use the variance function with the (xi-xbar)(yi-ybar) val and it works
     covariance = calculateVariance(popSize, sigmaXiMinusXBarTimesYiMinusYBar, 1);
 
-    cout << "Sxy = " << setprecision(18) << covariance << endl;
-
     // calculating correlation coefficient
     correlationCoefficient = calculateCorrelationCoefficient(covariance, xStdDev, yStdDev);
-
-    cout << "Rxy = " << setprecision(18) << correlationCoefficient << endl;
 
     // o h  b o y  l i n e a r  r e g r e s s i o n  t i m e
 
     // calculating slope
     slope = calculateSlope(sigmaXiMinusXBarTimesYiMinusYBar, sigmaXiMinusXBarSquared);
 
-    cout << "b1 = " << setprecision(18) << slope << endl;
-
     // calculating intercept
 
     intercept = calculateIntercept(yBar, xBar, slope);
-    cout << "b0 = " << setprecision(18) << intercept << endl;
 
     // big stupid ass yhat table time now for SSE, SSR and SST :)))))))
     yHatValues = new long double[popSize];
@@ -310,8 +283,6 @@ void linearRegression()
     // calculating (yi - y^i)^2 and SSE
     yiMinusYHatiSquared = new long double[popSize];
     SSE = calculateYiMinusYHatiSquaredAndSum(popSize, yiMinusYHati, yiMinusYHatiSquared);
-
-    cout << "sigma(yi - yhati)^2 OR SSE = " << SSE << endl;
 
     // onto SSR
 
@@ -336,7 +307,24 @@ void linearRegression()
     // at last, test statistic
     tTestStatistic = calculateTestStatistic(slope, slopeStdDev);
 
-    cout << "Test Statistic is: " << setprecision(3) << tTestStatistic << endl;
+    // header for dis shizzle
+    cout << left << setprecision(8) << setw(8) << "xi" << setw(8) << "yi"
+         << setw(16) << "xi - xbar" << setw(16) << "yi - ybar"
+         << setw(20) << "(xi - xbar)^2" << setw(20) << "(yi - ybar)^2" << setw(24) << "(xi - xbar)(yi - ybar)"
+         << setw(12) << "y^i"
+         << setw(16) << "yi - y^i" << setw(20) << "(yi - y^i)^2"
+         << setw(16) << "y^i - ybar" << setw(20) << "(y^i - ybar)^2" << endl;
+
+    // printing the table
+    for (int idx = 0; idx < popSize; idx++)
+    {
+        cout << left << setw(8) << xValues[idx] << setw(8) << yValues[idx]
+             << setw(16) << xiMinusXBar[idx] << setw(16) << yiMinusYBar[idx]
+             << setw(20) << xiMinusXBarSquared[idx] << setw(20) << yiMinusYBarSquared[idx] << setw(24) << xiMinusXBarTimesYiMinusYBar[idx]
+             << setw(12) << yHatValues[idx]
+             << setw(16) << yiMinusYHati[idx] << setw(20) << yiMinusYHatiSquared[idx]
+             << setw(16) << yHatMinusYBar[idx] << setw(20) << yHatMinusYBarSquared[idx] << endl;
+    }
 }
 
 int main()
