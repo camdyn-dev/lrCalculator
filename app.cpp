@@ -253,7 +253,7 @@ public:
              << setw(8) << "Sx2:" << setw(12) << xVariance << setw(8) << "Sy2:" << setw(12) << yVariance << endl
              << setw(8) << "Sx:" << setw(12) << xStdDev << setw(8) << "Sx:" << setw(12) << xStdDev << endl
              << setw(8) << "Sxy:" << setw(12) << covariance << setw(8) << "Rxy:" << setw(12) << correlationCoefficient << endl
-             << setw(8) << "b1:" << setw(12) << intercept << setw(8) << "b0:" << setw(12) << slope << endl
+             << setw(8) << "b0:" << setw(12) << intercept << setw(8) << "b1:" << setw(12) << slope << endl
              << setw(8) << "SSE:" << setw(12) << SSE << setw(8) << "SSR:" << setw(12) << SSR << endl
              << setw(8) << "SST:" << setw(12) << sigmaYiMinusYBarSquared << setw(8) << "R2:" << setw(12) << coefficientOfDetermination << endl
              << setw(8) << "MSE/S2:" << setw(12) << MSE << setw(8) << "S:" << setw(12) << MSERoot << endl
